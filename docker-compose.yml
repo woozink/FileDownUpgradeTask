@@ -1,0 +1,63 @@
+version: "3"
+
+networks:
+  runtopia_network:
+
+services:
+  localstack:
+    container_name: aws-infra
+    image: localstack/localstack
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+      - DEBUG=1
+      - DATA_DIR=/tmp/localstack/data
+    volumes:
+      - "./localstack:/tmp/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - runtopia_network
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: "runtopiamysql"
+      MYSQL_DATABASE: "runtopia"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - runtopia_network
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    command: redis-server --requirepass "0000"
+    ports:
+      - "6379:6379"
+    networks:
+      - runtopia_network
+
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: runtopia_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/runtopia?serverTimezone=UTC&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true"
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "runtopiamysql"
+      SPRING_REDIS_HOST: "redis"
+      SPRING_REDIS_PASSWORD: "0000"
+    depends_on:
+      - mysql
+      - localstack
+    networks:
+      - runtopia_network
+
+volumes:
+  mysql-data:
