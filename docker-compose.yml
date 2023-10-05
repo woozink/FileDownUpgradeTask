@@ -58,6 +58,12 @@ services:
       - localstack
     networks:
       - runtopia_network
+    volumes:
+      - "/Users/getout/Desktop:"
 
 volumes:
   mysql-data:
+
+
+
+

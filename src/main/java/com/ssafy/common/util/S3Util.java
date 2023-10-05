@@ -33,6 +33,8 @@ public class S3Util {
         try {
             project = URLDecoder.decode(project, StandardCharsets.UTF_8.name());
             ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+            System.out.println(""+Runtime.getRuntime().availableProcessors()); // ?
+
             ListObjectsV2Result result = s3Client.listObjectsV2(bucket, project);
             for (S3ObjectSummary summary: result.getObjectSummaries()) {
                 GetObjectRequest getObjectRequest = new GetObjectRequest(bucket, summary.getKey());

@@ -18,7 +18,7 @@ public class FileDownloadController {
     public FileDownloadController(FileDownloadService fileDownloadService) {
         this.fileDownloadService = fileDownloadService;
     }
-
+    // -> s3 커스텀
     @GetMapping("/folder")
     public ResponseEntity<String> downloadFolder(@RequestParam String project) {
         fileDownloadService.downloadFolder(project);

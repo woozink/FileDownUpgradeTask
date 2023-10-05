@@ -5,7 +5,7 @@ import java.net.URL;
 public class DownloadSpeedTest {
     public static void main(String[] args) {
         try {
-            String targetUrl = "http://localhost:8080/api/v1/file/download/runtopia.zip";
+            String targetUrl = "http://localhost:8080/api/v1/file/download/runtopia2.zip";
             URL url = new URL(targetUrl);
 
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();

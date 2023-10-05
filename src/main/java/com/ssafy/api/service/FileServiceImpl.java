@@ -23,48 +23,50 @@
     import java.util.zip.ZipOutputStream;
 
     //TODO API를 이용한 구현
-    //@Service
-    //public class FileServiceImpl implements FileService {
-    //    //application.properties에 app.upload.dir을 정의하고, 없는 경우에는 default값으로 user.home
-    //    @Value("${app.upload.dir:${user.home}}")
-    //    private String DOMAIN;
-    //    private String uploadPath;
-    //
-    //    public String fileDownload(String fileName) {
-    //        uploadPath = DOMAIN + File.separator + "files" + "/" + fileName;
-    //        return uploadPath;
-    //
-    //    }
-    //}
-
-    //TODO S3를 이용한 다운로드 구현
     @Service
     public class FileServiceImpl implements FileService {
-
-        @Value("${aws.s3.endpoint}")
-        private String s3Endpoint;
-
-        @Value("${aws.s3.bucket}")
-        private String s3Bucket;
-
+        //application.properties에 app.upload.dir을 정의하고, 없는 경우에는 default값으로 user.home
         @Value("${app.upload.dir:${user.home}}")
         private String DOMAIN;
         private String uploadPath;
 
-        public File fileDownload(String fileName) {
-            S3Client s3Client = S3Client.builder()
-                    .endpointOverride(URI.create(s3Endpoint))
-                    .region(Region.US_EAST_1)
-                    .build();
+        public String fileDownload(String fileName) {
+            uploadPath = DOMAIN + File.separator + "files" + "/" + fileName;
 
-            try {
-                Path downloadPath = Paths.get(DOMAIN, "files", fileName);
-                s3Client.getObject(GetObjectRequest.builder().bucket(s3Bucket).key(fileName).build(),
-                        ResponseTransformer.toFile(downloadPath));
+            System.out.println("Path : " + uploadPath);
+            return uploadPath;
 
-                return downloadPath.toFile();
-            } finally {
-                s3Client.close();
-            }
         }
     }
+
+//    //TODO S3를 이용한 다운로드 구현
+//    @Service
+//    public class FileServiceImpl implements FileService {
+//
+//        @Value("${aws.s3.endpoint}")
+//        private String s3Endpoint;
+//
+//        @Value("${aws.s3.bucket}")
+//        private String s3Bucket;
+//
+//        @Value("${app.upload.dir:${user.home}}")
+//        private String DOMAIN;
+//        private String uploadPath;
+//
+//        public File fileDownload(String fileName) {
+//            S3Client s3Client = S3Client.builder()
+//                    .endpointOverride(URI.create(s3Endpoint))
+//                    .region(Region.US_EAST_1)
+//                    .build();
+//
+//            try {
+//                Path downloadPath = Paths.get(DOMAIN, "files", fileName);
+//                s3Client.getObject(GetObjectRequest.builder().bucket(s3Bucket).key(fileName).build(),
+//                        ResponseTransformer.toFile(downloadPath));
+//
+//                return downloadPath.toFile();
+//            } finally {
+//                s3Client.close();
+//            }
+//        }
+//    }
